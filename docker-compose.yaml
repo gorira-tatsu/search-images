@@ -1,0 +1,32 @@
+version: "3.8"
+
+services:
+  core:
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+    build: .
+    volumes:
+      - ./:/app
+      - #ここにモデルの保管ディレクトリ# :/app/models
+    ports:
+      - 8100:8100
+    networks:
+      - hos
+  
+  elastic:
+    image: elasticsearch:8.15.3
+    environment:
+      - xpack.security.enabled=false
+      - discovery.type=single-node
+    ports:
+      - 9200:9200
+      - 9300:9300
+    networks:
+      - hos
+    logging:
+      driver: "none"
+
+networks:
+  hos:
+    driver: bridge

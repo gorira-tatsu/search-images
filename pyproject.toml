@@ -1,0 +1,41 @@
+[project]
+name = "backend"
+version = "0.1.0"
+description = "Add your description here"
+requires-python = ">=3.9"
+dependencies = [
+    "accelerate>=1.1.1",
+    "bitsandbytes>=0.44.1",
+    "datasets>=3.1.0",
+    "elasticsearch>=8.15.1",
+    "fastapi[standard]>=0.115.4",
+    "librosa>=0.10.2.post1",
+    "ninja>=1.11.1.1",
+    "numpy>=2.0.2",
+    "packaging>=24.2",
+    "scikit-learn>=1.5.2",
+    "sentencepiece>=0.2.0",
+    "soundfile>=0.12.1",
+    "torch==2.4.0+cu124; sys_platform == 'linux'",
+    "torchvision==0.19.0+cu124; sys_platform == 'linux'",
+    "transformers>=4.46.2",
+    "uvicorn[standard]>=0.32.0",
+    "wheel>=0.45.0",
+    "hatchling>=1.22.5",
+    "editables>=0.5",
+    "setuptools",
+    "ollama"
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.uv]
+find-links = [
+    "https://download.pytorch.org/whl/cu124/torch",
+    "https://download.pytorch.org/whl/cu124/torchvision",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["hos/backend"]
