@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image Search</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #f4f4f9;
+    }
+    h1 {
+      text-align: center;
+    }
+    .search-bar {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .search-bar input {
+      padding: 10px;
+      width: 300px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 16px;
+    }
+    .search-bar button {
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .search-bar button:hover {
+      background-color: #0056b3;
+    }
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+    }
+    .card {
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      width: 300px;
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .card img {
+      max-width: 100%;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+    .card .details {
+      text-align: center;
+    }
+    .card .details p {
+      margin: 5px 0;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+  <h1>Image Search</h1>
+  <div class="search-bar">
+    <input type="text" id="search-input" placeholder="Enter your query" />
+    <button onclick="searchImages()">Search</button>
+  </div>
+  <div class="container" id="image-container"></div>
+
+  <script>
+    async function fetchImages(query) {
+      try {
+        const response = await fetch(`http://-----:8100/lifelog/search_image?query=${encodeURIComponent(query)}`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch images');
+        }
+        return await response.json();
+      } catch (error) {
+        console.error('Error fetching images:', error);
+        return [];
+      }
+    }
+
+    async function searchImages() {
+      const query = document.getElementById('search-input').value.trim();
+      if (!query) {
+        alert('Please enter a search query!');
+        return;
+      }
+
+      const data = await fetchImages(query);
+      const container = document.getElementById('image-container');
+      container.innerHTML = '';
+
+      if (data.length === 0) {
+        container.innerHTML = '<p>No results found.</p>';
+        return;
+      }
+
+      data.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'card';
+
+        const img = document.createElement('img');
+        img.src = `http://-----:8100/lifelog/images/?query=${item.image_path}`;
+        img.alt = item.description.trim() || 'No description available';
+
+        const details = document.createElement('div');
+        details.className = 'details';
+
+        const takenDate = document.createElement('p');
+        takenDate.textContent = `Taken Date: ${new Date(item.taken_date).toLocaleString()}`;
+
+        const description = document.createElement('p');
+        description.textContent = item.description.trim() || 'No description available';
+
+        details.appendChild(takenDate);
+        details.appendChild(description);
+        card.appendChild(img);
+        card.appendChild(details);
+
+        container.appendChild(card);
+      });
+    }
+  </script>
+</body>
+</html>
